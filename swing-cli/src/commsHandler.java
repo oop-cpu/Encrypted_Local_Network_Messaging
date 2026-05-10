@@ -15,31 +15,20 @@ public class commsHandler{
     private static int port = 6925;
 
     public commsHandler(String ipDest){
-        System.out.println("Checking connection with: " + ipDest);
-        destIp = ipDest;
         thisIp = getIp();
-
-        if(thisIp.equals("error")){
-            System.err.println("There was an error getting your local IP.");
-            thisIp = "";
-            return;
-        }
-
-        System.out.println("Testing: " + thisIp + " -> " + destIp);
-
         try{
-            if(isSameNetwork(destIp))
-                System.out.println("Destination is on the same local network.");
-            else{
-                System.out.println("Destination is on a different network. Connection failed.");
-                destIp = "";
-            }
-        }catch(Exception e){System.err.println("Network calculation error: " + e.getMessage()); destIp = "";}
-        if(!requestConnection()) destIp = "";
+            if(isSameNetwork(ipDest))
+                destIp = ipDest;
+        }catch(Exception e){System.out.println("Error isSameNetwork: " + e);}
     }
 
     public boolean isSameNetwork(String ip) throws Exception{
-        return InetAddress.getByName(ip).isReachable(2000);
+        try{
+            return InetAddress.getByName(ip).isReachable(2000);
+        }catch(Exception e){
+            System.out.println("Error isSameNetwork: " + e);
+            return false;
+        }
     }
 
     public static String getIp(){
@@ -59,11 +48,6 @@ public class commsHandler{
             }
         } catch (SocketException e) {e.printStackTrace();}
         return "127.0.0.1";
-    }
-
-    public static boolean ipReady(){
-        if(thisIp.equals("") || destIp.equals("")) return false;
-        else return true;
     }
 
     public static boolean requestConnection(){
@@ -88,16 +72,10 @@ public class commsHandler{
 			
         }catch(IOException e){
             System.err.println("Request failed: " + e.getMessage());
-            //e.printStackTrace();
             return false;
         }
 
         return true;
     }
-
-    public static void delay(int t){
-		try{Thread.sleep(t);}catch(InterruptedException e)
-		{Thread.currentThread().interrupt();}
-	}
     
 }
