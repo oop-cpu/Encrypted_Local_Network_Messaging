@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 
 public class decHandler{
-    private static String keyFile = "currKey.dat";
+    private static String keyFile = "decKey.dat";
     static final long MOD = 97;
 
     public static String decrypt(String mess){
@@ -149,6 +149,13 @@ public class decHandler{
                 return in.nextLine();
             else return "";
         }catch(FileNotFoundException e){System.out.println("Error in grab file: " + e);return "";}
+    }
+    public static void saveInFile(String cont){
+		try{
+			FileWriter out = new FileWriter(keyFile);
+			out.write(cont + "\n");
+			out.close();
+		}catch(IOException e){System.out.println("Error in save file: " + e);}
     }
 
 }
