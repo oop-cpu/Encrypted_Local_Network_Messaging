@@ -232,6 +232,8 @@ public class startMessaging{
         else{
             print("Message failed to send!");
         }
+        listener.receiveMessage("wait");
+        
     }
     public void acceptRequest(){
         print("Accepting connection request from: " + requests.getText());
@@ -242,6 +244,7 @@ public class startMessaging{
             print("Remote decryption key saved.");
         }
         else print("ERROR: Remote decryption key is blank.");
+        listener.receiveMessage("wait");
     }
     public void sendRequest(){
         print("Sending request to: " + sendRequests.getText());

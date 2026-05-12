@@ -167,7 +167,7 @@ public class commsHandler{
     public boolean send(String mess){
         stopWaiting();
         mess = enc.encrypt(mess);
-        return sendPort(mess);
+        return sendPort(thisIp + " " + mess);
     }
 
     public boolean sendPort(String mess){
