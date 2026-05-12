@@ -206,13 +206,13 @@ public class startMessaging{
             String ip = in.next();
             requests.setText(ip);
             print("Received request from: " + ip);
-            potKey = in.nextLine();
+            potKey = in.next();
         }
         else if(first.equals("458")){
             String ip = in.next();
             sendRequests.setText("Accepted...");
             print("Request accept from: " + ip);
-            potKey = in.nextLine();
+            potKey = in.next();
             if(potKey.length() > 0){
                 comm.storeDecKey(potKey);
                 print("Remote decryption key saved.");

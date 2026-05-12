@@ -166,8 +166,31 @@ public class commsHandler{
 
     public boolean send(String mess){
         stopWaiting();
-        mess = enc.encrypt(mess);
-        return sendPort(thisIp + " " + mess);
+        try(Socket socket = new Socket()){
+            int connectTimeoutMs = 5000;
+            int readTimeoutMs = 5000;
+
+            System.out.println("Asking " + destIp + " to connect...");
+
+            socket.connect(new InetSocketAddress(destIp, port), connectTimeoutMs);
+            socket.setSoTimeout(readTimeoutMs);
+
+            try(PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true)){
+                out.println(thisIp + " " + enc.encrypt(mess));
+                if(out.checkError()){
+                    System.err.println("Writer encountered an error while sending.");
+                    return false;
+                }
+            }
+
+            System.out.println("Connection request sent to: " + destIp);
+			
+        }catch(IOException e){
+            System.err.println("Request failed: " + e.getMessage());
+            return false;
+        }
+
+        return true;
     }
 
     public boolean sendPort(String mess){
