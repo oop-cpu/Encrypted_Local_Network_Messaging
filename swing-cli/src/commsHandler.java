@@ -245,4 +245,7 @@ public class commsHandler{
     public String getDestination(){
         return destIp;
     }
+    public void manualIpEntered(String ip){
+        thisIp = ip;
+    }
 }

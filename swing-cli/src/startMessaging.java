@@ -20,6 +20,9 @@ public class startMessaging{
     public volatile JButton accept = new JButton("Accept");
     public volatile JButton sendRequestButton = new JButton("Send");
     public volatile JTextField sendRequests = new JTextField();
+    
+    public volatile JTextField enterIp = new JTextField();
+    
     JTextArea outputText = new JTextArea();
     JScrollPane output = new JScrollPane(outputText);
 
@@ -163,6 +166,14 @@ public class startMessaging{
         message.setBounds(750, 600, 500, 50);
         message.setVisible(true);
         message.setText("Enter message...");
+        
+        enterIp.setEditable(true);
+        enterIp.setFont(displayFont);
+        enterIp.setForeground(textColor);
+        enterIp.setBackground(textBackgroundColor);
+        enterIp.setBounds(75, 700, 500, 50);
+        enterIp.setVisible(true);
+        enterIp.setText("Enter your ip manually.");
 
         chat.getContentPane().setBackground(backgroundColor);
 
@@ -182,6 +193,10 @@ public class startMessaging{
             listener.receiveMessage("sender");
         }                         
         );
+        enterIp.addActionListener(e->{
+            comm.manualIpEntered(enterIp.getText());
+            print("Ip entered manually: " + enterIp.getText());
+        });
 
         chat.add(requests);
         chat.add(accept);
@@ -192,6 +207,8 @@ public class startMessaging{
         chat.add(chatBox);
         chat.add(sendMessage);
         chat.add(message);
+        
+        chat.add(enterIp);
         
         chat.setVisible(true);
 
