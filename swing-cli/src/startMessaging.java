@@ -57,8 +57,8 @@ public class startMessaging{
     
     public static void main(String[] args){
         listener.startListening();
+        listener.startSocketListener();
         listener.receiveMessage("initFrame");
-		listener.receiveMessage("wait");
     }
 
     //threads
@@ -224,15 +224,14 @@ public class startMessaging{
     }
     public void sender(){
         print("Encrypting and sending message to: " + comm.getDestination());
-        if(comm.send(chatText.getText())){
+        if(comm.send(message.getText())){
             print("Message sent!");
-            text("Me", chatText.getText());
-            chatText.setText("");
+            text("Me", message.getText());
+            message.setText("");
         }
         else{
             print("Message failed to send!");
         }
-        listener.receiveMessage("wait");
         
     }
     public void acceptRequest(){
@@ -244,12 +243,10 @@ public class startMessaging{
             print("Remote decryption key saved.");
         }
         else print("ERROR: Remote decryption key is blank.");
-        listener.receiveMessage("wait");
     }
     public void sendRequest(){
         print("Sending request to: " + sendRequests.getText());
         print(comm.sendRequest(sendRequests.getText()));
-        listener.receiveMessage("wait");
     }
 
     public void print(String x){
@@ -259,9 +256,49 @@ public class startMessaging{
         outputText.setCaretPosition(outputText.getDocument().getLength());
     }
     public void text(String from, String x){
-        outputBuffer = from + ":\n" + x + "\n";
-        chatText.append(outputBuffer);
+        String out = from + ":\n" + x + "\n";
+        chatText.append(out);
         chatText.setCaretPosition(chatText.getDocument().getLength());
+    }
+    public void startSocketListener(){
+        Thread t = new Thread(()->{
+            while(true){
+                String mess = comm.waitForMessage();
+                processIncoming(mess);
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+    }
+    public void processIncoming(String mess) {
+        try {
+            Scanner in = new Scanner(mess);
+            String first = in.next();
+    
+            if(first.equals("457")){
+                String ip = in.next();
+                requests.setText(ip);
+                print("Received request from: " + ip);
+                potKey = in.next();
+            }
+            else if(first.equals("458")){
+                String ip = in.next();
+                sendRequests.setText("Accepted...");
+                print("Request accept from: " + ip);
+                potKey = in.next();
+    
+                if(potKey.length() > 0){
+                    comm.storeDecKey(potKey);
+                    print("Remote decryption key saved.");
+                }
+            }
+            else {
+                text(first, comm.decrypt(in.nextLine()));
+            }
+    
+        } catch(Exception e) {
+            print("Error processing message: " + e);
+        }
     }
 }
 

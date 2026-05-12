@@ -165,7 +165,6 @@ public class commsHandler{
     }
 
     public boolean send(String mess){
-        stopWaiting();
         try(Socket socket = new Socket()){
             int connectTimeoutMs = 5000;
             int readTimeoutMs = 5000;
