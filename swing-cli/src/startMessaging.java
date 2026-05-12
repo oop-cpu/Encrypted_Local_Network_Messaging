@@ -37,6 +37,15 @@ public class startMessaging{
     Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
     Border border = BorderFactory.createCompoundBorder(line, padding);
 
+    //chat box stuff
+
+    JTextArea chatText = new JTextArea();
+    JScrollPane chatBox = new JScrollPane(chatText);
+    JButton sendMessage = new JButton("Send");
+    JTextField message = new JTextField();
+    
+    ////////////////
+
     int width = 0;
     int height = 0;
 
@@ -50,7 +59,6 @@ public class startMessaging{
         listener.startListening();
         listener.receiveMessage("initFrame");
 		listener.receiveMessage("wait");
-        listener.receiveMessage("sender");
     }
 
     //threads
@@ -130,6 +138,31 @@ public class startMessaging{
         outputText.setForeground(Color.GREEN);
         outputText.setBackground(textBackgroundColor);
         output.setBackground(textBackgroundColor);
+        outputText.setLineWrap(true);
+
+        chatText.setEditable(false);
+        chatBox.setOpaque(true);
+        chatBox.setBounds(750, 75, 625, 500);
+        chatBox.setBorder(border);
+        chatText.setFont(displayFont);
+        chatText.setForeground(Color.YELLOW);
+        chatText.setBackground(textBackgroundColor);
+        chatBox.setBackground(textBackgroundColor);
+        chatText.setLineWrap(true);
+
+        sendMessage.setFont(displayFont);
+        sendMessage.setForeground(textColor);
+        sendMessage.setBackground(buttonGreen);
+        sendMessage.setBounds(1275, 600, 100, 50);
+        sendMessage.setVisible(true);
+
+        message.setEditable(true);
+        message.setFont(displayFont);
+        message.setForeground(textColor);
+        message.setBackground(textBackgroundColor);
+        message.setBounds(750, 600, 500, 50);
+        message.setVisible(true);
+        message.setText("Enter message...");
 
         chat.getContentPane().setBackground(backgroundColor);
 
@@ -141,14 +174,29 @@ public class startMessaging{
             sendRequest();
         }                         
         );
+        sendMessage.addActionListener(e->{
+            listener.receiveMessage("sender");
+        }                         
+        );
+        message.addActionListener(e->{
+            listener.receiveMessage("sender");
+        }                         
+        );
 
         chat.add(requests);
         chat.add(accept);
         chat.add(sendRequests);
         chat.add(output);
         chat.add(sendRequestButton);
+
+        chat.add(chatBox);
+        chat.add(sendMessage);
+        chat.add(message);
         
         chat.setVisible(true);
+
+        print("System: this is where you can read program outputs. Think of it \nlike a terminal.");
+        text("System", "This is where you can chat with other machines once you connect. I will let you know once you're connected.");
     }
     public void waiter(){
         String mess = comm.waitForMessage();
@@ -160,7 +208,7 @@ public class startMessaging{
             print("Received request from: " + ip);
             potKey = in.nextLine();
         }
-        if(first.equals("458")){
+        else if(first.equals("458")){
             String ip = in.next();
             sendRequests.setText("Accepted...");
             print("Request accept from: " + ip);
@@ -172,9 +220,18 @@ public class startMessaging{
             else print("ERROR: Remote decryption key is blank.");
                 
         }
+        else text(first, comm.decrypt(in.nextLine()));
     }
     public void sender(){
-        
+        print("Encrypting and sending message to: " + comm.getDestination());
+        if(comm.send(chatText.getText())){
+            print("Message sent!");
+            text("Me", chatText.getText());
+            chatText.setText("");
+        }
+        else{
+            print("Message failed to send!");
+        }
     }
     public void acceptRequest(){
         print("Accepting connection request from: " + requests.getText());
@@ -197,6 +254,11 @@ public class startMessaging{
         outputBuffer = x + "\n";
         outputText.append(outputBuffer);
         outputText.setCaretPosition(outputText.getDocument().getLength());
+    }
+    public void text(String from, String x){
+        outputBuffer = from + ":\n" + x + "\n";
+        chatText.append(outputBuffer);
+        chatText.setCaretPosition(chatText.getDocument().getLength());
     }
 }
 

@@ -164,10 +164,10 @@ public class commsHandler{
         }catch(IOException ignored){}
     }
 
-    public void send(String mess){
+    public boolean send(String mess){
         stopWaiting();
         mess = enc.encrypt(mess);
-        sendPort(mess);
+        return sendPort(mess);
     }
 
     public boolean sendPort(String mess){
@@ -216,5 +216,11 @@ public class commsHandler{
 
     public void storeDecKey(String key){
         dec.saveInFile(key);
+    }
+    public String decrypt(String mess){
+        return dec.decrypt(mess);
+    }
+    public String getDestination(){
+        return destIp;
     }
 }
