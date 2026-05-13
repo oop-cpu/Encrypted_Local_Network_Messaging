@@ -197,7 +197,8 @@ public class startMessaging{
             comm.manualIpEntered(enterIp.getText());
             print("Ip entered manually: " + enterIp.getText());
             comm.stopWaiting();
-            listener.receiveMessage("wait");
+            listener.startSocketListener();
+            //listener.receiveMessage("wait");
         });
 
         chat.add(requests);
