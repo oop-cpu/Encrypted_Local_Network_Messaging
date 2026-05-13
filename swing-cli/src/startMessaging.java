@@ -196,6 +196,8 @@ public class startMessaging{
         enterIp.addActionListener(e->{
             comm.manualIpEntered(enterIp.getText());
             print("Ip entered manually: " + enterIp.getText());
+            comm.stopWaiting();
+            listener.receiveMessage("wait");
         });
 
         chat.add(requests);
