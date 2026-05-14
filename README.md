@@ -31,7 +31,7 @@ Keep an eye on the box to the left for anything going wrong while setting up and
 
 - Java
 ```bash
-sudo apt install java
+sudo apt install default-jdk
 ```
 
 ## Compile Java (only if needed but most likely not)
